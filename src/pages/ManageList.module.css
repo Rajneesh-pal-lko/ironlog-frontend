@@ -1,0 +1,54 @@
+.page { padding-bottom: 40px; }
+
+.header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 56px 20px 20px;
+  position: sticky; top: 0; background: var(--bg); z-index: 10;
+  border-bottom: 1px solid var(--border);
+}
+.back {
+  background: none; border: none; color: var(--text2); padding: 4px;
+  display: flex; align-items: center;
+}
+.back svg { width: 22px; height: 22px; }
+.title { font-size: 22px; font-weight: 700; }
+
+.addRow {
+  display: flex; gap: 10px; padding: 20px 20px 0;
+}
+.input {
+  flex: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text); font-size: 15px;
+  padding: 12px 14px; outline: none; transition: border-color 0.15s;
+}
+.input:focus { border-color: var(--accent); }
+.input::placeholder { color: var(--text3); }
+.addBtn {
+  background: var(--accent); color: #000; font-size: 15px; font-weight: 700;
+  border: none; border-radius: var(--radius-sm); padding: 12px 20px;
+  flex-shrink: 0;
+}
+.addBtn:active { opacity: 0.8; }
+
+.label {
+  font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text3);
+  padding: 16px 20px 8px;
+}
+
+.list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+
+.item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.itemName { font-size: 15px; font-weight: 500; }
+.deleteBtn {
+  background: none; border: none; color: var(--text3); padding: 4px;
+  display: flex; align-items: center; transition: color 0.15s;
+}
+.deleteBtn:active { color: var(--red); }
+.deleteBtn svg { width: 18px; height: 18px; }
+
+.empty { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 14px; }
