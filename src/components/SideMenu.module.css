@@ -57,6 +57,13 @@
   border-radius: 4px; background: var(--surface2); color: var(--text3);
 }
 
+.userName {
+  font-size: 13px; color: var(--text2); margin-top: 2px;
+}
+
+.logout { color: var(--red); }
+.logout .menuIcon { }
+
 .footer {
   margin-top: auto;
   padding: 24px 20px max(24px, env(safe-area-inset-bottom));

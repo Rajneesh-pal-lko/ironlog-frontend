@@ -1,12 +1,18 @@
-// Central API layer — all backend calls go through here
-// When backend URL changes (e.g. deployed to Render), only change BASE_URL
-
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
-async function request(method, path, body) {
+function getToken() {
+  return localStorage.getItem('ironlog_token');
+}
+
+async function request(method, path, body, requiresAuth = true) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (requiresAuth) {
+    const token = getToken();
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+  }
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   });
   const data = await res.json();
@@ -14,8 +20,13 @@ async function request(method, path, body) {
   return data;
 }
 
-// ── EXERCISES ─────────────────────────────────────────────────────────
 export const api = {
+  auth: {
+    signup: (data) => request('POST', '/auth/signup', data, false),
+    login:  (data) => request('POST', '/auth/login',  data, false),
+    me:     ()     => request('GET',  '/auth/me'),
+  },
+
   exercises: {
     getAll:       ()           => request('GET',    '/exercises'),
     create:       (data)       => request('POST',   '/exercises', data),
