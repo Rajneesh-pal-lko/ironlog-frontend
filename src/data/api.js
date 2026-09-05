@@ -41,6 +41,17 @@ export const api = {
     delete: (name) => request('DELETE', `/settings/equipment/${encodeURIComponent(name)}`),
   },
 
+  workouts: {
+    getSessions:   ()               => request('GET',    '/workouts'),
+    getSession:    (id)             => request('GET',    `/workouts/${id}`),
+    createSession: (data)           => request('POST',   '/workouts', data),
+    updateSession: (id, data)       => request('PATCH',  `/workouts/${id}`, data),
+    addExercise:   (id, data)       => request('POST',   `/workouts/${id}/exercises`, data),
+    addSet:        (id, exId, data) => request('POST',   `/workouts/${id}/exercises/${exId}/sets`, data),
+    deleteSet:     (id, exId, setId)=> request('DELETE', `/workouts/${id}/exercises/${exId}/sets/${setId}`),
+    getHistory:    (exerciseId)     => request('GET',    `/workouts/history/${exerciseId}`),
+  },
+
   movementTypes: {
     getAll: ()     => request('GET',    '/settings/movement-types'),
     add:    (name) => request('POST',   '/settings/movement-types', { name }),

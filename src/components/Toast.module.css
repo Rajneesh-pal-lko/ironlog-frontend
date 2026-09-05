@@ -17,6 +17,9 @@
   white-space: nowrap;
 }
 
+.toast.success { background: #1a2a0a; border-color: var(--accent); color: var(--accent); }
+.toast.error   { background: #2a0a0a; border-color: #ff5555;    color: #ff7777; }
+
 .toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
