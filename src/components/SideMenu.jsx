@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { api } from '../data/api';
+import { useToast } from './Toast';
 import styles from './SideMenu.module.css';
 
 const MENU_ITEMS = [
@@ -22,6 +25,21 @@ const MENU_ITEMS = [
 export default function SideMenu({ open, onClose }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const showToast = useToast();
+  const [seeding, setSeeding] = useState(false);
+
+  async function handleSeedHistory() {
+    setSeeding(true);
+    try {
+      const res = await api.seed.demoHistory();
+      showToast(res.message || 'Demo history added!', 'success');
+      onClose();
+    } catch (err) {
+      showToast(err.message || 'Failed — make sure you have exercises in your library first.', 'error');
+    } finally {
+      setSeeding(false);
+    }
+  }
 
   function go(path, soon) {
     if (soon) return;
@@ -66,6 +84,14 @@ export default function SideMenu({ open, onClose }) {
             ))}
           </div>
         ))}
+
+        <div className={styles.group}>
+          <div className={styles.groupLabel}>Setup & Dev</div>
+          <button className={styles.menuItem} onClick={handleSeedHistory} disabled={seeding}>
+            <span className={styles.menuIcon}>🧪</span>
+            <span className={styles.menuLabel}>{seeding ? 'Adding…' : 'Load Demo Workout History'}</span>
+          </button>
+        </div>
 
         <div className={styles.group}>
           <div className={styles.groupLabel}>Account</div>

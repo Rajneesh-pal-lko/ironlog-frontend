@@ -31,7 +31,8 @@ export const api = {
     getAll:       ()           => request('GET',    '/exercises'),
     create:       (data)       => request('POST',   '/exercises', data),
     update:       (id, data)   => request('PUT',    `/exercises/${id}`, data),
-    toggleActive: (id)         => request('PATCH',  `/exercises/${id}/toggle`),
+    toggleActive:     (id) => request('PATCH', `/exercises/${id}/toggle`),
+    toggleFavourite:  (id) => request('PATCH', `/exercises/${id}/favourite`),
     delete:       (id)         => request('DELETE', `/exercises/${id}`),
   },
 
@@ -48,8 +49,21 @@ export const api = {
     updateSession: (id, data)       => request('PATCH',  `/workouts/${id}`, data),
     addExercise:   (id, data)       => request('POST',   `/workouts/${id}/exercises`, data),
     addSet:        (id, exId, data) => request('POST',   `/workouts/${id}/exercises/${exId}/sets`, data),
-    deleteSet:     (id, exId, setId)=> request('DELETE', `/workouts/${id}/exercises/${exId}/sets/${setId}`),
+    deleteSet:     (id, exId, setId)     => request('DELETE', `/workouts/${id}/exercises/${exId}/sets/${setId}`),
+    updateSet:     (id, exId, setId, data) => request('PATCH', `/workouts/${id}/exercises/${exId}/sets/${setId}`, data),
     getHistory:    (exerciseId)     => request('GET',    `/workouts/history/${exerciseId}`),
+  },
+
+  progress: {
+    calendar:      (months = 3)    => request('GET', `/progress/calendar?months=${months}`),
+    byDate:        (date)          => request('GET', `/progress/by-date?date=${date}`),
+    byExercise:    (id, limit = 0) => request('GET', `/progress/by-exercise/${id}?limit=${limit}`),
+    byMuscle:      (muscle)        => request('GET', `/progress/by-muscle/${encodeURIComponent(muscle)}`),
+    exercisesDone: ()              => request('GET', '/progress/exercises-done'),
+  },
+
+  seed: {
+    demoHistory: () => request('POST', '/seed/demo-history'),
   },
 
   movementTypes: {

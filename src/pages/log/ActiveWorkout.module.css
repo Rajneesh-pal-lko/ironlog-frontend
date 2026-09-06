@@ -1,0 +1,443 @@
+.page {
+  min-height: 100dvh;
+  padding-bottom: 120px;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 52px 20px 12px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 20;
+  border-bottom: 1px solid var(--border);
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.dateStr {
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 500;
+}
+
+.timer {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+
+.finishBtn {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 99px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* ── Type tags ── */
+.typesRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 10px 20px 0;
+}
+
+.typeTag {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── Progress ── */
+.progressWrap {
+  padding: 14px 20px 6px;
+}
+
+.progressTrack {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.progressDots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  padding: 0;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.dotDone {
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+.dotActive {
+  background: var(--accent);
+  width: 20px;
+  border-radius: 4px;
+}
+
+.progressLabel {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 500;
+}
+
+/* ── Done (previous) cards ── */
+.doneCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 6px 16px 0;
+  width: calc(100% - 32px);
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  text-align: left;
+  opacity: 0.75;
+}
+
+.doneLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.doneTick {
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.doneName {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.doneSets {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 1px;
+  display: block;
+}
+
+.doneEdit {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* ── Active card ── */
+.activeCard {
+  margin: 10px 16px 0;
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 0 24px rgba(200, 241, 53, 0.07);
+}
+
+.activeCardLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px 6px;
+  background: var(--accent-dim);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--accent);
+}
+
+.activeCardNum {
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+/* Override SetLogger wrap border when inside activeCard */
+.activeCard > div {
+  border: none;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+/* ── Next (upcoming) cards ── */
+.nextCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: calc(100% - 32px);
+  margin: 6px 16px 0;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  text-align: left;
+  opacity: 0.55;
+}
+
+.nextNum {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text3);
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.nextName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  flex: 1;
+}
+
+.nextMuscle {
+  font-size: 11px;
+  color: var(--text3);
+  flex-shrink: 0;
+}
+
+/* ── Empty state ── */
+.empty {
+  text-align: center;
+  padding: 50px 20px 20px;
+  color: var(--text3);
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.empty p {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── Add Exercise button ── */
+.addWrap {
+  padding: 16px 16px 0;
+}
+
+.addExBtn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  color: var(--text2);
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.addExBtn:active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Finish overlay ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.confirmSheet {
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 430px;
+  padding: 0 20px max(28px, env(safe-area-inset-bottom));
+  animation: slideUp 0.25s cubic-bezier(.32,1,.56,1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.confirmHandle {
+  width: 36px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 14px auto 20px;
+}
+
+.confirmTitle {
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+/* Summary stats */
+.confirmSummary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 16px 0;
+  margin-bottom: 20px;
+}
+
+.confirmStat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.confirmStatVal {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.confirmStatLabel {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.confirmStatDiv {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+}
+
+.confirmBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.finishConfirmBtn {
+  padding: 15px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #000;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.keepGoingBtn {
+  padding: 15px;
+  border-radius: var(--radius);
+  background: var(--surface2);
+  color: var(--text);
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.discardSection {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.discardWarn {
+  font-size: 12px;
+  color: var(--text3);
+  text-align: center;
+}
+
+.discardWarn strong {
+  color: var(--red);
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.discardInput {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  padding: 10px 14px;
+  text-align: center;
+  outline: none;
+  font-family: monospace;
+  letter-spacing: 1px;
+  width: 100%;
+}
+
+.discardInput:focus { border-color: var(--red); }
+
+.discardBtn {
+  padding: 13px;
+  border-radius: var(--radius);
+  background: var(--red-dim);
+  color: var(--red);
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.discardBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.discardBtn:not(:disabled) {
+  border-color: var(--red);
+}

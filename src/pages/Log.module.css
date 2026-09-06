@@ -1,0 +1,4 @@
+/* Log page wrapper — minimal, children handle their own layout */
+.page {
+  min-height: 100dvh;
+}

@@ -13,7 +13,12 @@
 .inactiveToggle {
   background: none; border: 1px solid var(--border);
   color: var(--text2); font-size: 12px; padding: 5px 12px;
-  border-radius: 99px;
+  border-radius: 99px; transition: all 0.15s;
+}
+.inactiveToggleActive {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .menuBtn {
   background: none; border: none; color: var(--text2);
@@ -81,6 +86,21 @@
 .move { background: rgba(100,150,255,0.12); color: #7aa4ff; }
 .uni { background: rgba(255,180,50,0.12); color: #ffb432; }
 
+.heartBtn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--text3);
+  padding: 4px 2px;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: transform 0.15s, color 0.15s;
+}
+.heartBtn:active { transform: scale(1.3); }
+.heartActive { color: #ff4d6d; }
+
+.favChip { min-width: 44px; }
+
 .inactiveBadge {
   font-size: 10px; font-weight: 600; padding: 3px 8px;
   border-radius: 4px; background: var(--surface2); color: var(--text3);
@@ -105,6 +125,49 @@
 .empty { text-align: center; padding: 60px 20px; color: var(--text3); }
 .emptyIcon { font-size: 48px; margin-bottom: 12px; }
 .empty p { font-size: 15px; line-height: 1.6; }
+
+/* Seed banner */
+.seedBanner {
+  text-align: center;
+  padding: 40px 24px;
+  margin: 0 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.seedIcon { font-size: 52px; margin-bottom: 14px; }
+.seedTitle { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+.seedSub { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 22px; }
+.seedBtn {
+  width: 100%;
+  padding: 15px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #000;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  transition: transform 0.15s;
+}
+.seedBtn:active { transform: scale(0.97); }
+.seedBtn:disabled { opacity: 0.6; }
+.seedOr { font-size: 13px; color: var(--text3); }
+
+/* Hidden hint */
+.hiddenHint {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text3);
+  font-size: 13px;
+  text-align: center;
+}
+.hiddenHint:active { color: var(--accent); border-color: var(--accent); }
 
 /* Modal overlay */
 .overlay {

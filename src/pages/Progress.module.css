@@ -1,0 +1,270 @@
+.page { padding-bottom: 90px; }
+
+/* Header */
+.header {
+  padding: 56px 20px 0;
+  position: sticky; top: 0;
+  background: var(--bg); z-index: 10;
+}
+.headerRow {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.logo { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+.logo span { color: var(--accent); }
+.menuBtn {
+  background: none; border: none; color: var(--text2);
+  padding: 6px; display: flex; align-items: center; border-radius: 8px;
+}
+.menuBtn svg { width: 20px; height: 20px; }
+
+/* View tabs */
+.viewTabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+.viewTab {
+  flex: 1; padding: 10px 4px;
+  background: none; border: none;
+  font-size: 13px; font-weight: 600;
+  color: var(--text3);
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+.viewTabActive {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* Section container */
+.section { padding: 16px 16px 0; }
+
+/* ── Calendar ── */
+.monthNav {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.monthBtn {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); width: 36px; height: 36px;
+  border-radius: var(--radius-sm); font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+.monthLabel { font-size: 15px; font-weight: 700; }
+
+.calGrid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 4px; margin-bottom: 16px;
+}
+.calDayLabel {
+  text-align: center; font-size: 11px;
+  color: var(--text3); font-weight: 600;
+  padding: 4px 0;
+}
+.calDay {
+  aspect-ratio: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  gap: 2px; cursor: pointer;
+  transition: all 0.15s;
+}
+.calDayNum { font-size: 13px; font-weight: 600; color: var(--text2); }
+.calDot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.calDayWorkout { background: rgba(200,241,53,0.07); border-color: rgba(200,241,53,0.25); }
+.calDayWorkout .calDayNum { color: var(--text); }
+.calDayToday { border-color: var(--accent); }
+.calDayToday .calDayNum { color: var(--accent); font-weight: 800; }
+.calDaySelected { background: var(--accent-dim); border-color: var(--accent); }
+
+/* Day detail */
+.dayDetail { margin-top: 4px; }
+.dayDetailHeader {
+  font-size: 15px; font-weight: 700;
+  margin-bottom: 10px; color: var(--text);
+}
+
+/* Session card (shared) */
+.sessionCard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.sessionCardDate {
+  font-size: 13px; font-weight: 700;
+  color: var(--accent); margin-bottom: 6px;
+}
+.sessionMeta { margin-bottom: 8px; }
+.sessionTypes { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 5px; }
+.typeTag {
+  font-size: 11px; padding: 2px 8px; border-radius: 99px;
+  background: var(--accent-dim); color: var(--accent); font-weight: 600;
+}
+.sessionStats { font-size: 12px; color: var(--text3); }
+
+/* Exercise row inside session card */
+.exRow {
+  padding: 7px 0;
+  border-top: 1px solid var(--border);
+}
+.exName { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+.exSets { display: flex; flex-wrap: wrap; gap: 4px; }
+.setChip {
+  font-size: 12px; background: var(--surface2);
+  color: var(--text2); padding: 3px 7px; border-radius: 5px;
+  display: flex; align-items: center; gap: 4px;
+}
+.setChipNum {
+  font-size: 10px; color: var(--text3); font-weight: 700;
+  background: var(--border); width: 14px; height: 14px;
+  border-radius: 3px; display: flex; align-items: center; justify-content: center;
+}
+
+/* ── By Exercise ── */
+
+/* Muscle filter chips row */
+.exFilterChips {
+  display: flex; gap: 6px; overflow-x: auto;
+  padding-bottom: 10px; scrollbar-width: none; margin-bottom: 4px;
+}
+.exFilterChips::-webkit-scrollbar { display: none; }
+.exFilterChip {
+  flex-shrink: 0; padding: 5px 12px; border-radius: 99px;
+  font-size: 12px; font-weight: 600; white-space: nowrap;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text2); transition: all 0.15s;
+}
+.exFilterChipActive {
+  background: var(--accent-dim); border-color: var(--accent); color: var(--accent);
+}
+
+/* Exercise list */
+.exList { display: flex; flex-direction: column; gap: 0; }
+
+.exListItem {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 11px 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); margin-bottom: 6px;
+  text-align: left; transition: border-color 0.15s;
+}
+.exListItemActive {
+  border-color: var(--accent);
+  border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+  margin-bottom: 0;
+}
+.exListIcon { font-size: 20px; flex-shrink: 0; }
+.exListInfo { flex: 1; min-width: 0; }
+.exListName { display: block; font-size: 14px; font-weight: 600; }
+.exListMuscle { font-size: 11px; color: var(--accent); font-weight: 500; }
+.exListChevron { font-size: 10px; color: var(--text3); flex-shrink: 0; }
+
+/* Inline history panel */
+.exHistoryPanel {
+  background: var(--surface2); border: 1px solid var(--accent);
+  border-top: none; border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  padding: 10px 12px 12px; margin-bottom: 6px;
+}
+.exHistoryPanelHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.exHistoryPanelTitle { font-size: 12px; font-weight: 700; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; }
+
+.searchWrap { position: relative; margin-bottom: 6px; }
+.searchInput {
+  width: 100%; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); font-size: 15px; padding: 11px 36px 11px 14px;
+  outline: none;
+}
+.searchInput:focus { border-color: var(--accent); }
+.clearBtn {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--text3); font-size: 14px;
+}
+.dropdown {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); margin-bottom: 10px;
+  overflow: hidden;
+}
+.dropItem {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 11px 14px; background: none; border: none;
+  border-bottom: 1px solid var(--border); text-align: left;
+  font-size: 14px; color: var(--text); font-weight: 500;
+}
+.dropItem:last-child { border-bottom: none; }
+.dropItem:active { background: var(--surface2); }
+.dropMuscle { font-size: 12px; color: var(--text3); }
+
+.exHistoryHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.exHistoryName { display: block; font-size: 17px; font-weight: 700; }
+.exHistoryMuscle { font-size: 12px; color: var(--accent); font-weight: 500; }
+
+/* Limit tabs */
+.limitTabs { display: flex; gap: 4px; }
+.limitTab {
+  padding: 5px 10px; border-radius: 6px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text3); font-size: 12px; font-weight: 600;
+}
+.limitTabActive {
+  background: var(--accent-dim); border-color: var(--accent); color: var(--accent);
+}
+
+/* PR card */
+.prCard {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--accent-dim); border: 1px solid var(--accent);
+  border-radius: var(--radius); padding: 10px 14px; margin-bottom: 12px;
+}
+.prLabel { font-size: 14px; font-weight: 700; color: var(--accent); }
+.prVal { font-size: 16px; font-weight: 800; flex: 1; }
+.prDate { font-size: 11px; color: var(--text3); }
+
+/* History card (by exercise) */
+.historyCard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 8px;
+}
+.historyCardHeader {
+  display: flex; justify-content: space-between;
+  margin-bottom: 7px;
+}
+.historyCardDate { font-size: 13px; font-weight: 600; color: var(--accent); }
+.historyCardVol { font-size: 12px; color: var(--text3); }
+.historyCardSets { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* ── By Muscle ── */
+.muscleGrid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8px; margin-bottom: 16px;
+}
+.muscleBtn {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 10px 4px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 11px; font-weight: 600;
+  color: var(--text2); transition: all 0.15s;
+}
+.muscleBtnActive {
+  background: var(--accent-dim); border-color: var(--accent); color: var(--accent);
+}
+.muscleBtnIcon { font-size: 20px; }
+.muscleBtnLabel { font-size: 10px; text-align: center; }
+
+.muscleResults { }
+.muscleResultsHeader {
+  font-size: 16px; font-weight: 700; margin-bottom: 12px;
+}
+
+/* Shared */
+.dimText { font-size: 13px; color: var(--text3); padding: 12px 0; }
+.emptyHint { text-align: center; padding: 50px 20px; color: var(--text3); }
+.emptyIcon { font-size: 44px; margin-bottom: 12px; }
+.emptyHint p { font-size: 14px; line-height: 1.6; }

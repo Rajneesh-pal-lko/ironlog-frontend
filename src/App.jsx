@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { WorkoutProvider } from './context/WorkoutContext';
 import BottomNav from './components/BottomNav';
 import SideMenu from './components/SideMenu';
 import Toast from './components/Toast';
@@ -8,6 +9,8 @@ import Exercises from './pages/Exercises';
 import ManageEquipment from './pages/ManageEquipment';
 import ManageMovementTypes from './pages/ManageMovementTypes';
 import ComingSoon from './pages/ComingSoon';
+import Log from './pages/Log';
+import Progress from './pages/Progress';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 
@@ -33,10 +36,10 @@ function AppRoutes() {
           <ProtectedRoute><Exercises onMenuOpen={() => setMenuOpen(true)} /></ProtectedRoute>
         } />
         <Route path="/log" element={
-          <ProtectedRoute><ComingSoon icon="📋" title="Workout Log" description="Log your sets, reps & weight. Coming in the next build." /></ProtectedRoute>
+          <ProtectedRoute><Log onMenuOpen={() => setMenuOpen(true)} /></ProtectedRoute>
         } />
         <Route path="/progress" element={
-          <ProtectedRoute><ComingSoon icon="📈" title="Progress" description="Track your PRs and strength over time. Coming soon." /></ProtectedRoute>
+          <ProtectedRoute><Progress onMenuOpen={() => setMenuOpen(true)} /></ProtectedRoute>
         } />
         <Route path="/manage/equipment" element={
           <ProtectedRoute><ManageEquipment /></ProtectedRoute>
@@ -60,7 +63,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppRoutes />
+        <WorkoutProvider>
+          <AppRoutes />
+        </WorkoutProvider>
       </AuthProvider>
     </BrowserRouter>
   );

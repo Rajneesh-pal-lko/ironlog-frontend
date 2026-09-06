@@ -1,0 +1,358 @@
+.wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.exHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.exInfo { flex: 1; min-width: 0; }
+
+.exName {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exMuscle {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.modeBadge {
+  color: var(--text3);
+  font-weight: 400;
+}
+
+.unitToggle {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* History */
+.historySection {
+  border-bottom: 1px solid var(--border);
+}
+
+.historyToggleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 10px;
+}
+
+.historyToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 9px 4px 9px 14px;
+  cursor: pointer;
+}
+
+.historyLimitBtns {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.historyLimitBtn {
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 5px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text3);
+}
+
+.historyLimitActive {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.historyToggleLabel {
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 600;
+}
+
+.historyToggleIcon {
+  font-size: 10px;
+  color: var(--text3);
+}
+
+.historyBody {
+  border-top: 1px solid var(--border);
+}
+
+.historyEmpty {
+  padding: 10px 14px 12px;
+  font-size: 12px;
+  color: var(--text3);
+  font-style: italic;
+}
+
+/* Session tabs */
+.historyTabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.historyTabBtn {
+  flex: 1;
+  padding: 7px 4px;
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text3);
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.historyTabActive {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.historySession {
+  padding: 10px 14px 12px;
+}
+
+.historyCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.historyItem {
+  padding: 8px 14px;
+  border-top: 1px solid var(--border);
+}
+
+.historyItemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.historyDate {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.historySetCount {
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.historySets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.historySet {
+  font-size: 12px;
+  background: var(--surface2);
+  color: var(--text2);
+  padding: 3px 8px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.historySetNum {
+  font-size: 10px;
+  color: var(--text3);
+  font-weight: 700;
+  background: var(--border);
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sets table */
+.setsWrap {
+  padding: 8px 14px 4px;
+}
+
+.setHeaderRow {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 4px;
+  align-items: center;
+}
+
+.setCol {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.setRow {
+  display: grid;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.setRow:last-child { border-bottom: none; }
+
+.setRowDone {
+  opacity: 0.6;
+  background: rgba(200,241,53,0.03);
+}
+
+.setNum {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.setInput {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  padding: 7px 4px;
+  width: 100%;
+  outline: none;
+  font-variant-numeric: tabular-nums;
+  /* Remove number input arrows */
+  -moz-appearance: textfield;
+}
+.setInput::-webkit-outer-spin-button,
+.setInput::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.setInput:focus { border-color: var(--accent); }
+.setInput::placeholder { color: var(--text3); font-weight: 400; }
+
+.setInputLocked {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text2);
+  pointer-events: none;
+}
+
+.doneTickBtn {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  color: var(--text3);
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin: auto;
+  transition: all 0.15s;
+}
+
+.doneTickConfirmed {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+.delBtn {
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 11px;
+  padding: 2px;
+  text-align: center;
+  width: 24px;
+}
+
+.noSets {
+  font-size: 13px;
+  color: var(--text3);
+  text-align: center;
+  padding: 12px 0;
+}
+
+.addSetBtn {
+  display: block;
+  width: 100%;
+  padding: 11px;
+  background: var(--accent-dim);
+  border: none;
+  border-top: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.exerciseDoneBtn {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  background: var(--surface2);
+  border: none;
+  border-top: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.exerciseDoneBtnReady {
+  background: var(--accent);
+  color: #000;
+}
