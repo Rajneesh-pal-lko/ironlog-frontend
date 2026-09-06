@@ -22,7 +22,7 @@ export default function Signup() {
     setLoading(true);
     try {
       await signup(form.name, form.email, form.password);
-      navigate('/exercises');
+      navigate('/log');
     } catch (err) {
       setError(err.message);
     } finally {

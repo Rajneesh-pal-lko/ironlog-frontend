@@ -4,7 +4,7 @@ import styles from './BottomNav.module.css';
 const NAV_ITEMS = [
   {
     path: '/exercises',
-    label: 'Library',
+    label: 'Exercises',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
         <path d="M6 4v16M18 4v16M6 12h12M3 8h3M18 8h3M3 16h3M18 16h3"/>
@@ -13,7 +13,7 @@ const NAV_ITEMS = [
   },
   {
     path: '/log',
-    label: 'Log',
+    label: 'Train',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
         <rect x="3" y="3" width="18" height="18" rx="3"/>

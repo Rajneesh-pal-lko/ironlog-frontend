@@ -121,17 +121,35 @@
 /* ── Done (previous) cards ── */
 .doneCard {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  align-items: stretch;
   margin: 6px 16px 0;
   width: calc(100% - 32px);
-  padding: 10px 14px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  text-align: left;
+  overflow: hidden;
   opacity: 0.75;
+}
+
+.doneCardMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  padding: 10px 14px;
+  text-align: left;
+  background: none;
+  border: none;
+}
+
+.doneRemoveBtn {
+  background: none;
+  border: none;
+  border-left: 1px solid var(--border);
+  color: var(--text3);
+  font-size: 13px;
+  padding: 0 12px;
+  flex-shrink: 0;
 }
 
 .doneLeft {
@@ -190,8 +208,25 @@
   color: var(--accent);
 }
 
+.activeCardActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .activeCardNum {
   font-weight: 600;
+  opacity: 0.7;
+}
+
+.removeExBtn {
+  background: none;
+  border: 1px solid rgba(200, 241, 53, 0.3);
+  border-radius: 5px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
   opacity: 0.7;
 }
 
@@ -386,7 +421,18 @@
   font-weight: 600;
 }
 
-.discardSection {
+.discardBtn {
+  padding: 13px;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--text3);
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.discardConfirmRow {
   border-top: 1px solid var(--border);
   padding-top: 12px;
   display: flex;
@@ -395,49 +441,34 @@
 }
 
 .discardWarn {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text3);
   text-align: center;
 }
 
-.discardWarn strong {
-  color: var(--red);
-  font-family: monospace;
-  font-size: 13px;
+.discardConfirmBtns {
+  display: flex;
+  gap: 8px;
 }
 
-.discardInput {
+.discardConfirmNo {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius);
   background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
   color: var(--text);
+  border: none;
   font-size: 14px;
-  padding: 10px 14px;
-  text-align: center;
-  outline: none;
-  font-family: monospace;
-  letter-spacing: 1px;
-  width: 100%;
+  font-weight: 600;
 }
 
-.discardInput:focus { border-color: var(--red); }
-
-.discardBtn {
-  padding: 13px;
+.discardConfirmYes {
+  flex: 1;
+  padding: 12px;
   border-radius: var(--radius);
   background: var(--red-dim);
   color: var(--red);
-  border: 1px solid transparent;
+  border: 1px solid var(--red);
   font-size: 14px;
-  font-weight: 600;
-  transition: all 0.15s;
-}
-
-.discardBtn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.discardBtn:not(:disabled) {
-  border-color: var(--red);
+  font-weight: 700;
 }

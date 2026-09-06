@@ -10,15 +10,30 @@
 .headerRow { display: flex; align-items: center; justify-content: space-between; }
 .logo { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
 .logo span { color: var(--accent); }
-.inactiveToggle {
-  background: none; border: 1px solid var(--border);
-  color: var(--text2); font-size: 12px; padding: 5px 12px;
-  border-radius: 99px; transition: all 0.15s;
+/* My Exercises / All toggle */
+.viewToggle {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 3px;
+  margin-top: 14px;
+  gap: 2px;
 }
-.inactiveToggleActive {
-  background: var(--accent-dim);
-  border-color: var(--accent);
-  color: var(--accent);
+.viewBtn {
+  flex: 1;
+  padding: 7px 12px;
+  border-radius: 99px;
+  border: none;
+  background: none;
+  color: var(--text3);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.viewBtnActive {
+  background: var(--accent);
+  color: #000;
 }
 .menuBtn {
   background: none; border: none; color: var(--text2);
@@ -50,6 +65,20 @@
   color: var(--text2); transition: all 0.15s; white-space: nowrap;
 }
 .chip.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+.chipDivider {
+  flex-shrink: 0;
+  color: var(--border);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  pointer-events: none;
+}
+
+.chipMove {
+  border-style: dashed;
+}
 
 /* Label */
 .label {

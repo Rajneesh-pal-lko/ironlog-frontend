@@ -3,9 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../data/api';
 import { useToast } from './Toast';
+import RoutineSetup from './RoutineSetup';
 import styles from './SideMenu.module.css';
 
 const MENU_ITEMS = [
+  {
+    group: 'Training',
+    items: [
+      { label: 'Weekly Routine', path: '__routine__', icon: '🗓' },
+    ],
+  },
   {
     group: 'Manage',
     items: [
@@ -27,6 +34,7 @@ export default function SideMenu({ open, onClose }) {
   const { user, logout } = useAuth();
   const showToast = useToast();
   const [seeding, setSeeding] = useState(false);
+  const [showRoutine, setShowRoutine] = useState(false);
 
   async function handleSeedHistory() {
     setSeeding(true);
@@ -43,6 +51,7 @@ export default function SideMenu({ open, onClose }) {
 
   function go(path, soon) {
     if (soon) return;
+    if (path === '__routine__') { setShowRoutine(true); return; }
     onClose();
     navigate(path);
   }
@@ -85,13 +94,15 @@ export default function SideMenu({ open, onClose }) {
           </div>
         ))}
 
-        <div className={styles.group}>
-          <div className={styles.groupLabel}>Setup & Dev</div>
-          <button className={styles.menuItem} onClick={handleSeedHistory} disabled={seeding}>
-            <span className={styles.menuIcon}>🧪</span>
-            <span className={styles.menuLabel}>{seeding ? 'Adding…' : 'Load Demo Workout History'}</span>
-          </button>
-        </div>
+        {import.meta.env.DEV && (
+          <div className={styles.group}>
+            <div className={styles.groupLabel}>Dev</div>
+            <button className={styles.menuItem} onClick={handleSeedHistory} disabled={seeding}>
+              <span className={styles.menuIcon}>🧪</span>
+              <span className={styles.menuLabel}>{seeding ? 'Adding…' : 'Load Demo Workout History'}</span>
+            </button>
+          </div>
+        )}
 
         <div className={styles.group}>
           <div className={styles.groupLabel}>Account</div>
@@ -103,6 +114,8 @@ export default function SideMenu({ open, onClose }) {
 
         <div className={styles.footer}>IronLog · Personal Gym Tracker</div>
       </div>
+
+      {showRoutine && <RoutineSetup onClose={() => setShowRoutine(false)} />}
     </>
   );
 }

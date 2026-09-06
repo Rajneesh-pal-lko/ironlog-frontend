@@ -21,7 +21,7 @@ export default function Login() {
     setLoading(true);
     try {
       await login(form.email, form.password);
-      navigate('/exercises');
+      navigate('/log');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -61,7 +61,7 @@ export default function Login() {
           {error && <div className={styles.error}>{error}</div>}
 
           <button className={styles.btn} type="submit" disabled={loading}>
-            {loading ? 'Logging in…' : 'Log In'}
+            {loading ? 'Starting…' : 'Start Training'}
           </button>
         </form>
 

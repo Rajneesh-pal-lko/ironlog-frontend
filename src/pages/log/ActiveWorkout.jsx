@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useWorkout } from '../../context/WorkoutContext';
 import SetLogger from './SetLogger';
-import ExercisePicker from './ExercisePicker';
+import SmartExercisePicker from './SmartExercisePicker';
 import styles from './ActiveWorkout.module.css';
 
 function useElapsed(startTime) {
@@ -28,11 +28,11 @@ function setsSummary(ex) {
 }
 
 export default function ActiveWorkout() {
-  const { session, addExerciseToSession, finishSession, discardSession, loading } = useWorkout();
+  const { session, addExerciseToSession, removeExercise, finishSession, discardSession, loading } = useWorkout();
   const [activeIdx, setActiveIdx] = useState(0);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [confirmFinish, setConfirmFinish] = useState(false);
-  const [discardInput, setDiscardInput] = useState('');
+  const [confirmDiscard, setConfirmDiscard] = useState(false);
   const elapsed = useElapsed(session?.startTime);
 
   const exercises = session?.exercises || [];
@@ -41,6 +41,14 @@ export default function ActiveWorkout() {
   useEffect(() => {
     if (exercises.length > 0) setActiveIdx(exercises.length - 1);
   }, [exercises.length]);
+
+  // Auto-open picker on fresh session with no exercises
+  useEffect(() => {
+    if (session && exercises.length === 0) {
+      const t = setTimeout(() => setPickerOpen(true), 300);
+      return () => clearTimeout(t);
+    }
+  }, [session?._id]); // only on new session, not every render
 
   const dateStr = new Date().toLocaleDateString('en-IN', {
     weekday: 'long', day: 'numeric', month: 'short',
@@ -105,16 +113,23 @@ export default function ActiveWorkout() {
 
       {/* ── Previous exercises (collapsed) ── */}
       {exercises.slice(0, activeIdx).map((ex, i) => (
-        <button key={ex._id} className={styles.doneCard} onClick={() => setActiveIdx(i)}>
-          <div className={styles.doneLeft}>
-            <span className={styles.doneTick}>✓</span>
-            <div>
-              <span className={styles.doneName}>{ex.exerciseName}</span>
-              <span className={styles.doneSets}>{setsSummary(ex)}</span>
+        <div key={ex._id} className={styles.doneCard}>
+          <button className={styles.doneCardMain} onClick={() => setActiveIdx(i)}>
+            <div className={styles.doneLeft}>
+              <span className={styles.doneTick}>✓</span>
+              <div>
+                <span className={styles.doneName}>{ex.exerciseName}</span>
+                <span className={styles.doneSets}>{setsSummary(ex)}</span>
+              </div>
             </div>
-          </div>
-          <span className={styles.doneEdit}>Edit</span>
-        </button>
+            <span className={styles.doneEdit}>Edit</span>
+          </button>
+          <button
+            className={styles.doneRemoveBtn}
+            onClick={() => { removeExercise(ex._id); setActiveIdx(Math.max(0, activeIdx - 1)); }}
+            title="Remove exercise"
+          >✕</button>
+        </div>
       ))}
 
       {/* ── Active exercise ── */}
@@ -127,17 +142,31 @@ export default function ActiveWorkout() {
         <div className={styles.activeCard}>
           <div className={styles.activeCardLabel}>
             <span>Current Exercise</span>
-            <span className={styles.activeCardNum}>{activeIdx + 1} / {exercises.length}</span>
+            <div className={styles.activeCardActions}>
+              <span className={styles.activeCardNum}>{activeIdx + 1} / {exercises.length}</span>
+              <button
+                className={styles.removeExBtn}
+                onClick={() => {
+                  const ex = exercises[activeIdx];
+                  const newIdx = Math.max(0, activeIdx - 1);
+                  removeExercise(ex._id);
+                  setActiveIdx(newIdx);
+                }}
+                title="Remove exercise"
+              >✕ Remove</button>
+            </div>
           </div>
           <SetLogger
             sessionExercise={exercises[activeIdx]}
+            isLastExercise={activeIdx === exercises.length - 1}
             onExerciseDone={() => {
               if (activeIdx < exercises.length - 1) {
                 setActiveIdx(activeIdx + 1);
               } else {
-                setPickerOpen(true); // last exercise — offer to add another
+                setPickerOpen(true);
               }
             }}
+            onFinishWorkout={() => setConfirmFinish(true)}
           />
         </div>
       )}
@@ -159,15 +188,17 @@ export default function ActiveWorkout() {
       </div>
 
       {pickerOpen && (
-        <ExercisePicker
-          onSelect={handleAddExercise}
+        <SmartExercisePicker
+          onSelect={(data) => handleAddExercise(data)}
           onClose={() => setPickerOpen(false)}
+          routineLabels={session?.workoutTypes || []}
+          alreadyAdded={exercises.map(e => e.exerciseId)}
         />
       )}
 
       {/* ── Finish confirm sheet ── */}
       {confirmFinish && (
-        <div className={styles.overlay} onClick={() => { setConfirmFinish(false); setDiscardInput(''); }}>
+        <div className={styles.overlay} onClick={() => { setConfirmFinish(false); setConfirmDiscard(false); }}>
           <div className={styles.confirmSheet} onClick={e => e.stopPropagation()}>
             <div className={styles.confirmHandle} />
             <p className={styles.confirmTitle}>Finish workout?</p>
@@ -194,25 +225,22 @@ export default function ActiveWorkout() {
               <button className={styles.finishConfirmBtn} onClick={finishSession} disabled={loading}>
                 {loading ? 'Saving…' : '💾  Save Workout'}
               </button>
-              <button className={styles.keepGoingBtn} onClick={() => { setConfirmFinish(false); setDiscardInput(''); }}>
+              <button className={styles.keepGoingBtn} onClick={() => setConfirmFinish(false)}>
                 Keep Going
               </button>
-              <div className={styles.discardSection}>
-                <p className={styles.discardWarn}>To discard, type <strong>DISCARD</strong> below:</p>
-                <input
-                  className={styles.discardInput}
-                  placeholder="Type DISCARD to confirm"
-                  value={discardInput}
-                  onChange={e => setDiscardInput(e.target.value)}
-                />
-                <button
-                  className={styles.discardBtn}
-                  onClick={discardSession}
-                  disabled={discardInput !== 'DISCARD'}
-                >
+              {!confirmDiscard ? (
+                <button className={styles.discardBtn} onClick={() => setConfirmDiscard(true)}>
                   Discard Workout
                 </button>
-              </div>
+              ) : (
+                <div className={styles.discardConfirmRow}>
+                  <span className={styles.discardWarn}>Sure? This can't be undone.</span>
+                  <div className={styles.discardConfirmBtns}>
+                    <button className={styles.discardConfirmNo} onClick={() => setConfirmDiscard(false)}>Cancel</button>
+                    <button className={styles.discardConfirmYes} onClick={discardSession}>Yes, Discard</button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

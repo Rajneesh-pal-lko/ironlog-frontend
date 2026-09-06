@@ -47,11 +47,15 @@ export const api = {
     getSession:    (id)             => request('GET',    `/workouts/${id}`),
     createSession: (data)           => request('POST',   '/workouts', data),
     updateSession: (id, data)       => request('PATCH',  `/workouts/${id}`, data),
-    addExercise:   (id, data)       => request('POST',   `/workouts/${id}/exercises`, data),
+    addExercise:    (id, data)        => request('POST',   `/workouts/${id}/exercises`, data),
+    removeExercise: (id, exerciseId) => request('DELETE', `/workouts/${id}/exercises/${exerciseId}`),
     addSet:        (id, exId, data) => request('POST',   `/workouts/${id}/exercises/${exId}/sets`, data),
     deleteSet:     (id, exId, setId)     => request('DELETE', `/workouts/${id}/exercises/${exId}/sets/${setId}`),
     updateSet:     (id, exId, setId, data) => request('PATCH', `/workouts/${id}/exercises/${exId}/sets/${setId}`, data),
-    getHistory:    (exerciseId)     => request('GET',    `/workouts/history/${exerciseId}`),
+    getHistory:       (exerciseId) => request('GET', `/workouts/history/${exerciseId}`),
+    lastByWeekday:    (weekday)    => request('GET', `/workouts/last-by-weekday/${weekday}`),
+    recentExercises:  ()           => request('GET', '/workouts/recent-exercises'),
+    getPR:            (exerciseId) => request('GET', `/workouts/pr/${exerciseId}`),
   },
 
   progress: {
@@ -64,6 +68,11 @@ export const api = {
 
   seed: {
     demoHistory: () => request('POST', '/seed/demo-history'),
+  },
+
+  routine: {
+    get:  ()     => request('GET',   '/settings/routine'),
+    save: (days) => request('PATCH', '/settings/routine', days),
   },
 
   movementTypes: {

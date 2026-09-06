@@ -13,7 +13,7 @@ export default function ExercisePicker({ onSelect, onClose }) {
   const [movementTypes, setMovementTypes] = useState([]);
 
   useEffect(() => {
-    api.exercises.getAll().then(data => setExercises(data.filter(e => e.active)));
+    api.exercises.getAll().then(data => setExercises(data));
     api.movementTypes.getAll().then(setMovementTypes).catch(() => {});
   }, []);
 

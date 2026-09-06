@@ -47,131 +47,72 @@
   flex-shrink: 0;
 }
 
-/* History */
-.historySection {
+/* ── Last session (always visible) ── */
+.lastSession {
   border-bottom: 1px solid var(--border);
+  padding: 8px 14px 10px;
+  background: rgba(200, 241, 53, 0.03);
 }
 
-.historyToggleRow {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding-right: 10px;
-}
-
-.historyToggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex: 1;
-  background: none;
-  border: none;
-  padding: 9px 4px 9px 14px;
-  cursor: pointer;
-}
-
-.historyLimitBtns {
-  display: flex;
-  gap: 3px;
-  flex-shrink: 0;
-}
-
-.historyLimitBtn {
-  padding: 3px 8px;
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: 5px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text3);
-}
-
-.historyLimitActive {
-  background: var(--accent-dim);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.historyToggleLabel {
+.noHistory {
+  padding: 8px 14px;
   font-size: 12px;
   color: var(--text3);
-  font-weight: 600;
-}
-
-.historyToggleIcon {
-  font-size: 10px;
-  color: var(--text3);
-}
-
-.historyBody {
-  border-top: 1px solid var(--border);
-}
-
-.historyEmpty {
-  padding: 10px 14px 12px;
-  font-size: 12px;
-  color: var(--text3);
+  border-bottom: 1px solid var(--border);
   font-style: italic;
 }
 
-/* Session tabs */
-.historyTabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.historyTabBtn {
-  flex: 1;
-  padding: 7px 4px;
-  background: none;
-  border: none;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text3);
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s;
-}
-
-.historyTabActive {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-
-.historySession {
-  padding: 10px 14px 12px;
-}
-
-.historyCount {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  background: var(--accent-dim);
-  color: var(--accent);
-  font-size: 10px;
-  font-weight: 700;
-  border-radius: 4px;
-  margin-left: 6px;
-}
-
-.historyList {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.historyItem {
-  padding: 8px 14px;
-  border-top: 1px solid var(--border);
-}
-
-.historyItemHeader {
+.lastSessionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 6px;
+}
+
+.lastSessionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+}
+
+.lastSessionDate {
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.lastSessionSets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.olderWrap {
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 6px;
+}
+
+.olderToggle {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+}
+
+.olderSession {
+  margin-top: 8px;
+}
+
+.olderDate {
+  display: block;
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 4px;
 }
 
 .historyDate {
@@ -251,6 +192,26 @@
   background: rgba(200,241,53,0.03);
 }
 
+.setRowPR {
+  opacity: 1;
+  background: rgba(255, 200, 0, 0.06);
+  border-color: rgba(255, 200, 0, 0.3);
+}
+
+.prBadge {
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffd000;
+  padding: 2px 0 6px 8px;
+  letter-spacing: 0.3px;
+  animation: prPop 0.4s cubic-bezier(.32,1.8,.56,1);
+}
+
+@keyframes prPop {
+  from { opacity: 0; transform: scale(0.7) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 .setNum {
   text-align: center;
   font-size: 13px;
@@ -316,6 +277,13 @@
   padding: 2px;
   text-align: center;
   width: 24px;
+  transition: all 0.15s;
+}
+
+.delBtnArmed {
+  color: var(--red, #ff4d4d);
+  font-weight: 700;
+  font-size: 13px;
 }
 
 .noSets {
@@ -338,13 +306,16 @@
   text-align: center;
 }
 
+.exerciseBtnsRow {
+  display: flex;
+  border-top: 1px solid var(--border);
+}
+
 .exerciseDoneBtn {
-  display: block;
-  width: 100%;
+  flex: 1;
   padding: 13px;
   background: var(--surface2);
   border: none;
-  border-top: 1px solid var(--border);
   color: var(--text2);
   font-size: 14px;
   font-weight: 700;
@@ -353,6 +324,35 @@
 }
 
 .exerciseDoneBtnReady {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.addAnotherBtn {
+  flex: 1;
+  padding: 13px;
+  background: var(--surface2);
+  border: none;
+  border-right: 1px solid var(--border);
+  color: var(--text3);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.finishWorkoutBtn {
+  flex: 1;
+  padding: 13px;
+  background: var(--surface2);
+  border: none;
+  color: var(--text2);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.finishWorkoutBtnReady {
   background: var(--accent);
   color: #000;
 }

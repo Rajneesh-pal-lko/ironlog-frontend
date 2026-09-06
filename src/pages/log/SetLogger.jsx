@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useWorkout } from '../../context/WorkoutContext';
 import { api } from '../../data/api';
-import RestTimer from './RestTimer';
+import RestTimer, { getDefaultRest } from './RestTimer';
 import styles from './SetLogger.module.css';
-
-const DEFAULT_REST = 90;
 
 function getMode(ex) {
   if (ex.isTimed)      return 'timed';
@@ -27,7 +25,7 @@ function formatHistorySet(s, mode) {
   return `${s.weight ?? 0}${s.unit || 'kg'} × ${s.reps ?? 0}`;
 }
 
-export default function SetLogger({ sessionExercise, onExerciseDone }) {
+export default function SetLogger({ sessionExercise, onExerciseDone, isLastExercise, onFinishWorkout }) {
   const { addSet, deleteSet, updateSet } = useWorkout();
   const [history, setHistory] = useState([]);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -35,21 +33,48 @@ export default function SetLogger({ sessionExercise, onExerciseDone }) {
   const [historyLimit, setHistoryLimit] = useState(1); // 1 or 3
   const [activeRestSetId, setActiveRestSetId] = useState(null);
   const [unit, setUnit] = useState(() => localStorage.getItem('ironlog_unit') || 'kg');
+  const [prBest, setPrBest] = useState(null); // { weight, reps, volume }
 
   const ex = sessionExercise;
   const sets = ex.sets || [];
   const mode = getMode(ex);
+  const didAutoPopulate = useRef(false);
 
   useEffect(() => {
-    api.workouts.getHistory(ex.exerciseId).then(data => {
-      setHistory(data || []);
-      setHistoryTab(0);
-    }).catch(() => {});
+    didAutoPopulate.current = false; // reset when exercise changes
   }, [ex.exerciseId]);
+
+  useEffect(() => {
+    api.workouts.getPR(ex.exerciseId).then(setPrBest).catch(() => {});
+    api.workouts.getHistory(ex.exerciseId).then(data => {
+      const hist = data || [];
+      setHistory(hist);
+      setHistoryTab(0);
+
+      // Auto-populate sets from last session — only once, only if no sets yet
+      const lastSets = hist[0]?.sets;
+      if (lastSets && lastSets.length > 0 && ex.sets?.length === 0 && !didAutoPopulate.current) {
+        didAutoPopulate.current = true;
+        (async () => {
+          for (const s of lastSets) {
+            let newSet = { unit, restSeconds: getDefaultRest() };
+            if (mode === 'weighted')   { newSet.weight = s.weight ?? 0; newSet.reps = s.reps ?? 0; }
+            if (mode === 'bodyweight') { newSet.weight = 0; newSet.reps = s.reps ?? 0; }
+            if (mode === 'timed')      { newSet.duration = s.duration ?? 30; newSet.reps = 1; }
+            if (mode === 'unilateral') {
+              newSet.leftWeight  = s.leftWeight  ?? 0; newSet.leftReps  = s.leftReps  ?? 0;
+              newSet.rightWeight = s.rightWeight ?? 0; newSet.rightReps = s.rightReps ?? 0;
+            }
+            await addSet(ex._id, newSet);
+          }
+        })();
+      }
+    }).catch(() => {});
+  }, [ex.exerciseId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleAddSet() {
     const prev = sets[sets.length - 1];
-    let newSet = { unit, restSeconds: DEFAULT_REST };
+    let newSet = { unit, restSeconds: getDefaultRest() };
     if (mode === 'weighted')    { newSet.weight = prev?.weight ?? 0; newSet.reps = prev?.reps ?? 0; }
     if (mode === 'bodyweight')  { newSet.weight = 0; newSet.reps = prev?.reps ?? 0; }
     if (mode === 'timed')       { newSet.duration = prev?.duration ?? 30; newSet.reps = 1; }
@@ -75,11 +100,6 @@ export default function SetLogger({ sessionExercise, onExerciseDone }) {
   const confirmedCount = sets.filter(s => s._confirmed).length;
   const allConfirmed = sets.length > 0 && confirmedCount === sets.length;
 
-  const shownHistory = history.slice(0, historyLimit);
-  const historyTabLabels = shownHistory.map((h, i) =>
-    new Date(h.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
-  );
-
   // Column headers
   const headers = {
     weighted:   ['#', unit, 'Reps', '✓', ''],
@@ -87,6 +107,9 @@ export default function SetLogger({ sessionExercise, onExerciseDone }) {
     timed:      ['#', 'Secs', '✓', ''],
     unilateral: ['#', `L${unit}`, 'Lreps', `R${unit}`, 'Rreps', '✓', ''],
   }[mode];
+
+  const lastSession = history[0] || null;
+  const olderSessions = history.slice(1, 3);
 
   return (
     <div className={styles.wrap}>
@@ -107,77 +130,50 @@ export default function SetLogger({ sessionExercise, onExerciseDone }) {
         )}
       </div>
 
-      {/* ── History ── */}
-      <div className={styles.historySection}>
-        <div className={styles.historyToggleRow}>
-          <button className={styles.historyToggle} onClick={() => setHistoryOpen(o => !o)}>
-            <span className={styles.historyToggleLabel}>📅 Previous sessions
-              {history.length > 0 && <span className={styles.historyCount}> {Math.min(history.length, 3)}</span>}
+      {/* ── Last session — always visible ── */}
+      {lastSession ? (
+        <div className={styles.lastSession}>
+          <div className={styles.lastSessionHeader}>
+            <span className={styles.lastSessionLabel}>Last time</span>
+            <span className={styles.lastSessionDate}>
+              {new Date(lastSession.date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}
             </span>
-            <span className={styles.historyToggleIcon}>{historyOpen ? '▲' : '▼'}</span>
-          </button>
-          {history.length > 1 && historyOpen && (
-            <div className={styles.historyLimitBtns}>
-              {[1, 3].map(n => (
-                <button
-                  key={n}
-                  className={`${styles.historyLimitBtn} ${historyLimit === n ? styles.historyLimitActive : ''}`}
-                  onClick={() => { setHistoryLimit(n); setHistoryTab(0); }}
-                >{n}</button>
+          </div>
+          <div className={styles.lastSessionSets}>
+            {(lastSession.sets || []).map((s, j) => (
+              <span key={j} className={styles.historySet}>
+                <span className={styles.historySetNum}>{j + 1}</span>
+                {formatHistorySet(s, mode)}
+              </span>
+            ))}
+          </div>
+          {/* Older sessions collapsible */}
+          {olderSessions.length > 0 && (
+            <div className={styles.olderWrap}>
+              <button className={styles.olderToggle} onClick={() => setHistoryOpen(o => !o)}>
+                {historyOpen ? '▲ Hide older sessions' : `▼ Show ${olderSessions.length} older session${olderSessions.length > 1 ? 's' : ''}`}
+              </button>
+              {historyOpen && olderSessions.map((h, i) => (
+                <div key={i} className={styles.olderSession}>
+                  <span className={styles.olderDate}>
+                    {new Date(h.date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}
+                  </span>
+                  <div className={styles.lastSessionSets}>
+                    {(h.sets || []).map((s, j) => (
+                      <span key={j} className={styles.historySet}>
+                        <span className={styles.historySetNum}>{j + 1}</span>
+                        {formatHistorySet(s, mode)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           )}
         </div>
-
-        {historyOpen && (
-          <div className={styles.historyBody}>
-            {history.length === 0 ? (
-              <p className={styles.historyEmpty}>No previous sessions for this exercise yet.</p>
-            ) : (
-              <>
-                {/* Session tabs — shown when historyLimit > 1 or multiple sessions */}
-                {shownHistory.length > 1 && (
-                  <div className={styles.historyTabs}>
-                    {historyTabLabels.map((label, i) => (
-                      <button
-                        key={i}
-                        className={`${styles.historyTabBtn} ${historyTab === i ? styles.historyTabActive : ''}`}
-                        onClick={() => setHistoryTab(i)}
-                      >
-                        {i === 0 ? 'Last' : label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Selected session's sets */}
-                {(() => {
-                  const h = shownHistory[historyTab] || shownHistory[0];
-                  if (!h) return null;
-                  return (
-                    <div className={styles.historySession}>
-                      <div className={styles.historySessionHeader}>
-                        <span className={styles.historyDate}>
-                          {new Date(h.date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
-                        </span>
-                        <span className={styles.historySetCount}>{h.sets?.length || 0} sets</span>
-                      </div>
-                      <div className={styles.historySets}>
-                        {(h.sets || []).map((s, j) => (
-                          <span key={j} className={styles.historySet}>
-                            <span className={styles.historySetNum}>{j + 1}</span>
-                            {formatHistorySet(s, mode)}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
-              </>
-            )}
-          </div>
-        )}
-      </div>
+      ) : (
+        <div className={styles.noHistory}>First time doing this — crush it! 💪</div>
+      )}
 
       {/* ── Sets table ── */}
       <div className={styles.setsWrap}>
@@ -198,6 +194,7 @@ export default function SetLogger({ sessionExercise, onExerciseDone }) {
             index={i}
             mode={mode}
             unit={unit}
+            prBest={prBest}
             onDelete={() => deleteSet(ex._id, s._id)}
             onUpdate={data => updateSet(ex._id, s._id, data)}
             onDone={() => handleSetDone(s._id)}
@@ -209,7 +206,7 @@ export default function SetLogger({ sessionExercise, onExerciseDone }) {
       {activeRestSetId && (
         <RestTimer
           key={activeRestSetId}
-          seconds={DEFAULT_REST}
+          seconds={getDefaultRest()}
           onDismiss={() => setActiveRestSetId(null)}
         />
       )}
@@ -217,21 +214,47 @@ export default function SetLogger({ sessionExercise, onExerciseDone }) {
       {/* ── Add set ── */}
       <button className={styles.addSetBtn} onClick={handleAddSet}>+ Add Set</button>
 
-      {/* ── Exercise done button ── */}
-      {sets.length > 0 && onExerciseDone && (
-        <button
-          className={`${styles.exerciseDoneBtn} ${allConfirmed ? styles.exerciseDoneBtnReady : ''}`}
-          onClick={onExerciseDone}
-        >
-          {allConfirmed ? '✓ Exercise Done — Next' : 'Next Exercise →'}
-        </button>
+      {/* ── Navigation / finish buttons ── */}
+      {sets.length > 0 && (
+        <div className={styles.exerciseBtnsRow}>
+          {/* Always show Next (unless last exercise) */}
+          {!isLastExercise && onExerciseDone && (
+            <button
+              className={`${styles.exerciseDoneBtn} ${allConfirmed ? styles.exerciseDoneBtnReady : ''}`}
+              onClick={onExerciseDone}
+            >
+              {allConfirmed ? '✓ Done — Next Exercise' : 'Next Exercise →'}
+            </button>
+          )}
+          {/* On last exercise: Add Another + Finish Workout */}
+          {isLastExercise && (
+            <>
+              {onExerciseDone && (
+                <button
+                  className={styles.addAnotherBtn}
+                  onClick={onExerciseDone}
+                >
+                  + Add Exercise
+                </button>
+              )}
+              {onFinishWorkout && (
+                <button
+                  className={`${styles.finishWorkoutBtn} ${allConfirmed ? styles.finishWorkoutBtnReady : ''}`}
+                  onClick={onFinishWorkout}
+                >
+                  {allConfirmed ? '🏁 Finish Workout' : 'Finish Workout'}
+                </button>
+              )}
+            </>
+          )}
+        </div>
       )}
     </div>
   );
 }
 
 /* ── Set Row ── */
-function SetRow({ set, index, mode, unit, onDelete, onUpdate, onDone }) {
+function SetRow({ set, index, mode, unit, prBest, onDelete, onUpdate, onDone }) {
   const [vals, setVals] = useState({
     weight:      set.weight      ?? 0,
     reps:        set.reps        ?? 0,
@@ -242,7 +265,19 @@ function SetRow({ set, index, mode, unit, onDelete, onUpdate, onDone }) {
     rightReps:   set.rightReps   ?? 0,
   });
   const [confirmed, setConfirmed] = useState(set._confirmed || false);
+  const [deleteArmed, setDeleteArmed] = useState(false);
+  const deleteTimer = useRef(null);
   const saveTimer = useRef(null);
+
+  function handleDeleteTap() {
+    if (deleteArmed) {
+      clearTimeout(deleteTimer.current);
+      onDelete();
+    } else {
+      setDeleteArmed(true);
+      deleteTimer.current = setTimeout(() => setDeleteArmed(false), 2000);
+    }
+  }
 
   function change(field, raw) {
     if (confirmed) return; // locked — must untick first
@@ -252,6 +287,11 @@ function SetRow({ set, index, mode, unit, onDelete, onUpdate, onDone }) {
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => onUpdate(next), 600);
   }
+
+  // Is this set a new PR?
+  const isPR = confirmed && mode === 'weighted' && prBest
+    && vals.weight > 0 && vals.reps > 0
+    && (vals.weight * vals.reps) > (prBest.volume || 0);
 
   function toggleConfirm() {
     const next = !confirmed;
@@ -272,31 +312,40 @@ function SetRow({ set, index, mode, unit, onDelete, onUpdate, onDone }) {
   });
 
   return (
-    <div className={`${styles.setRow} ${confirmed ? styles.setRowDone : ''}`}
-         style={{ gridTemplateColumns: gridCols(mode) }}>
-      <span className={styles.setNum}>{index + 1}</span>
+    <>
+      <div className={`${styles.setRow} ${confirmed ? styles.setRowDone : ''} ${isPR ? styles.setRowPR : ''}`}
+           style={{ gridTemplateColumns: gridCols(mode) }}>
+        <span className={styles.setNum}>{index + 1}</span>
 
-      {mode === 'weighted'   && <><input {...inp('weight')} /><input {...inp('reps')} /></>}
-      {mode === 'bodyweight' && <input {...inp('reps')} />}
-      {mode === 'timed'      && <input {...inp('duration', '30')} />}
-      {mode === 'unilateral' && (
-        <>
-          <input {...inp('leftWeight')} />
-          <input {...inp('leftReps')} />
-          <input {...inp('rightWeight')} />
-          <input {...inp('rightReps')} />
-        </>
+        {mode === 'weighted'   && <><input {...inp('weight')} /><input {...inp('reps')} /></>}
+        {mode === 'bodyweight' && <input {...inp('reps')} />}
+        {mode === 'timed'      && <input {...inp('duration', '30')} />}
+        {mode === 'unilateral' && (
+          <>
+            <input {...inp('leftWeight')} />
+            <input {...inp('leftReps')} />
+            <input {...inp('rightWeight')} />
+            <input {...inp('rightReps')} />
+          </>
+        )}
+
+        <button
+          className={`${styles.doneTickBtn} ${confirmed ? styles.doneTickConfirmed : ''}`}
+          onClick={toggleConfirm}
+          title={confirmed ? 'Tap to edit' : 'Mark set done'}
+        >
+          {confirmed ? '✓' : '○'}
+        </button>
+
+        <button
+          className={`${styles.delBtn} ${deleteArmed ? styles.delBtnArmed : ''}`}
+          onClick={handleDeleteTap}
+          title={deleteArmed ? 'Tap again to delete' : 'Delete set'}
+        >{deleteArmed ? '?' : '✕'}</button>
+      </div>
+      {isPR && (
+        <div className={styles.prBadge}>🏆 New PR!</div>
       )}
-
-      <button
-        className={`${styles.doneTickBtn} ${confirmed ? styles.doneTickConfirmed : ''}`}
-        onClick={toggleConfirm}
-        title={confirmed ? 'Tap to edit' : 'Mark set done'}
-      >
-        {confirmed ? '✓' : '○'}
-      </button>
-
-      <button className={styles.delBtn} onClick={onDelete}>✕</button>
-    </div>
+    </>
   );
 }

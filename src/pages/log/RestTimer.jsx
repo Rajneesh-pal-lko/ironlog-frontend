@@ -1,8 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import styles from './RestTimer.module.css';
 
-export default function RestTimer({ seconds = 90, onDismiss }) {
-  const [remaining, setRemaining] = useState(seconds);
+const STORAGE_KEY = 'ironlog_rest_seconds';
+
+export function getDefaultRest() {
+  return Number(localStorage.getItem(STORAGE_KEY) || 90);
+}
+
+export default function RestTimer({ seconds: initialSeconds, onDismiss }) {
+  const defaultSecs = initialSeconds ?? getDefaultRest();
+  const [total, setTotal] = useState(defaultSecs);
+  const [remaining, setRemaining] = useState(defaultSecs);
   const [paused, setPaused] = useState(false);
   const intervalRef = useRef(null);
 
@@ -18,9 +26,17 @@ export default function RestTimer({ seconds = 90, onDismiss }) {
     return () => clearInterval(intervalRef.current);
   }, [paused, remaining]);
 
+  function adjust(delta) {
+    const next = Math.max(10, remaining + delta);
+    setRemaining(next);
+    const newTotal = Math.max(10, total + delta);
+    setTotal(newTotal);
+    localStorage.setItem(STORAGE_KEY, newTotal);
+  }
+
   const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
   const ss = String(remaining % 60).padStart(2, '0');
-  const pct = (remaining / seconds) * 100;
+  const pct = (remaining / total) * 100;
 
   return (
     <div className={styles.wrap}>
@@ -28,7 +44,10 @@ export default function RestTimer({ seconds = 90, onDismiss }) {
         <div className={styles.fill} style={{ width: `${pct}%` }} />
       </div>
       <div className={styles.row}>
-        <span className={styles.label}>Rest</span>
+        <div className={styles.adjustBtns}>
+          <button className={styles.adjustBtn} onClick={() => adjust(-30)}>−30s</button>
+          <button className={styles.adjustBtn} onClick={() => adjust(+30)}>+30s</button>
+        </div>
         <span className={styles.time}>{mm}:{ss}</span>
         <div className={styles.btns}>
           <button className={styles.btn} onClick={() => setPaused(p => !p)}>
